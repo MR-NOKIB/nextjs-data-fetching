@@ -14,7 +14,7 @@ export const metadata = {
 export default async function Post() {
     const posts = await getPosts();
     return (
-        <div>
+        <div>z
             <div className="grid grid-cols-4 gap-6">
                 {posts.map(post =>
                     <div key={post.id} className="border mb-10 rounded-2xl p-10  space-y-3">

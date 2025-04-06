@@ -34,17 +34,21 @@ export default async function MealPage({ searchParams }) {
     return (
         <div className={`${roboto.className}`}>
             <div className="flex justify-center w-full">
-                <MealsSearchInput></MealsSearchInput>
+                <MealsSearchInput />
             </div>
-            <div className="grid grid-cols-4 gap-10">
-                {meals?.map(meal =>
-                    <div key={meal.idMeal} className=" border p-6 rounded-2xl">
+
+            <div className="columns-1 sm:columns-2 md:columns-3 lg:columns-4 gap-6">
+                {meals?.map(meal => (
+                    <div key={meal.idMeal} className="mb-6 break-inside-avoid border p-6 rounded-2xl">
                         <Image src={meal.strMealThumb} width={641} height={641} alt={meal.strMeal} />
                         <p>{meal?.strMeal}</p>
                         <p>{meal?.strInstructions}</p>
-                        <Link href={`/meals/${meal.idMeal}`}> Details</Link>
-                    </div>)}
+                        <Link href={`/meals/${meal.idMeal}`}>Details</Link>
+                    </div>
+                ))}
             </div>
+
         </div>
+
     )
 }
