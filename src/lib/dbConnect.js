@@ -1,8 +1,24 @@
 import { MongoClient, ServerApiVersion } from 'mongodb'
-const uri = process.env.MONGODB_URI;
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
 
-export default function dbConnect(collectionName) {
+if (!process.env.MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable inside .env.local')
+}
+
+if (!process.env.DB_NAME) {
+    throw new Error('Please define the DB_NAME environment variable inside .env.local')
+}
+
+const uri = process.env.MONGODB_URI;
+const dbName = process.env.DB_NAME;
+
+let cachedClient = null;
+let cachedDb = null;
+
+export default async function dbConnect(collectionName) {
+    if (cachedClient && cachedDb) {
+        return cachedDb.collection(collectionName);
+    }
+
     const client = new MongoClient(uri, {
         serverApi: {
             version: ServerApiVersion.v1,
@@ -11,6 +27,14 @@ export default function dbConnect(collectionName) {
         }
     });
 
-    return client.db(process.env.DB_NAME).collection(collectionName)
+    try {
+        await client.connect();
+        cachedClient = client;
+        cachedDb = client.db(dbName);
+        return cachedDb.collection(collectionName);
+    } catch (error) {
+        console.error('MongoDB connection error:', error);
+        throw error;
+    }
 }
 
